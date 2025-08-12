@@ -27,6 +27,45 @@ func AddMonthsSameDay(t time.Time, months int) time.Time {
 	return candidate
 }
 
+// AddMonthsEnd は、months だけ先の月の **最終日** を返します。
+//   - 基準日の day が対象月に存在しない場合はその月の末日に丸める
+//   - 例: 2025-01-31 +1 month → 2025-02-28
+func AddMonthsEnd(t time.Time, months int) time.Time {
+	year, month, _ := t.Date()
+	loc := t.Location()
+
+	// (year, month+months, 1) を作る → 先に月だけ足す
+	startOfTargetMonth := time.Date(year, month+time.Month(months), 1,
+		t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
+
+	// 翌月の 1 日を取得し、そこから -1 日で「対象月の最終日」になる
+	lastDayOfTarget := startOfTargetMonth.AddDate(0, 1, -1)
+	return lastDayOfTarget
+}
+
+// AddMonthsPreferSameOrEnd は、
+//  1. 対象月に同じ day があればそれを返す
+//  2. 無ければその月の最終日を返す
+func AddMonthsPreferSameOrEnd(t time.Time, months int) time.Time {
+	year, month, day := t.Date()
+	loc := t.Location()
+
+	targetMonth := month + time.Month(months)
+	targetYear := year + int(targetMonth-1)/12
+	targetMonth = (targetMonth-1)%12 + 1
+
+	// 試しに同じ day を作ってみる（存在しなければ次月へロールオーバー）
+	candidate := time.Date(targetYear, targetMonth, day,
+		t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), loc)
+
+	if candidate.Month() == targetMonth {
+		// 同じ day が作れた → そのまま返す
+		return candidate
+	}
+	// 作れなかった → 月末に丸める
+	return AddMonthsEnd(t, months)
+}
+
 // 営業日判定（土・日・祝日）
 func IsWeekend(t time.Time) bool {
 	wd := t.Weekday()
