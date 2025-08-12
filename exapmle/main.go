@@ -13,12 +13,12 @@ func main() {
 		log.Fatalf("祝日ロード失敗: %v", err)
 	}
 
-	base, _ := time.Parse("2006-01-02", "2025-08-13")
+	base, _ := time.Parse("2006-01-02", "2025-01-31")
 	fmt.Println("基準日 :", base.Format("2006-01-02 (Mon)"))
 
 	// 同じ day を保つ月足し
-	nextMonthSameDay := businessday.AddMonthsSameDay(base, 1)
-	fmt.Println("AddMonthsSameDay +1:", nextMonthSameDay.Format("2006-01-02 (Mon)"))
+	nextMonthSameDay := businessday.AddMonthsEnd(base, 1)
+	fmt.Println("AddMonthsEnd +1:", nextMonthSameDay.Format("2006-01-02 (Mon)"))
 
 	// 営業日で「次の営業日」→土・日・祝日を除外
 	nextBiz := businessday.NextBusinessDay(base, 1)
