@@ -3,6 +3,8 @@
 
 // 基本的な日付操作
 
+func AddMonthsSameDay(t time.Time, months int) time.Time  // 従来実装（端数は次月へロールオーバー）
+
 func AddMonthsEnd(t time.Time, months int) time.Time             // 目的の「翌月末」実装
 
 func AddMonthsPreferSameOrEnd(t time.Time, months int) time.Time // 同日があれば同じ、無ければ月末
