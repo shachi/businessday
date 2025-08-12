@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	if err := businessday.LoadJapaneseHolidays("../businessday/syukujitsu.csv"); err != nil {
+	if err := businessday.LoadJapaneseHolidays("../syukujitsu.csv"); err != nil {
 		log.Fatalf("祝日ロード失敗: %v", err)
 	}
 
